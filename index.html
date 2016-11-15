@@ -21,6 +21,11 @@
     <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -71,7 +76,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <img class="img-responsive" src="img/profile.jpg" height="500px" width="500px">
+                    <img class="img-responsive" src="img/profile.png" height="500px" width="500px">
                     <div class="intro-text">
                         <span class="name">Justin Skord</span>
                         <hr class="star-light">
@@ -99,7 +104,7 @@
                                 <i class="fa fa-search-plus fa-3x"></i>
                             </div>
                         </div>
-                        <img src="img/portfolio/cabin.png" class="img-responsive" alt="">
+                        <img src="http://www.ci.albertville.mn.us/wp-content/uploads/2016/06/2016-election-logo.jpg" class="img-responsive" alt="">
                     </a>
                 </div>
                 <div class="col-sm-4 portfolio-item">
@@ -167,7 +172,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 col-lg-offset-2">
-                    <p>I am currently a student Actualize, a coding boodcamp/apprenticeship</p>
+                    <p>I am currently a student at Actualize, a coding bootcamp/apprenticeship program.  I am in the Chicago Cohort</p>
                 </div>
                 <div class="col-lg-4">
                     <p>I am intersted in creating software and web applications that contribute to making industries and busnesses more stream-lined, and expanding client services</p>
@@ -288,31 +293,36 @@
                 </div>
             </div>
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>Project Title</h2>
-                            <hr class="star-primary">
-                            <img src="img/portfolio/cabin.png" class="img-responsive img-centered" alt="">
-                            <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-                            <ul class="list-inline item-details">
-                                <li>Client:
-                                    <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-                                    </strong>
-                                </li>
-                                <li>Date:
-                                    <strong><a href="http://startbootstrap.com">April 2014</a>
-                                    </strong>
-                                </li>
-                                <li>Service:
-                                    <strong><a href="http://startbootstrap.com">Web Development</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
+                            <h2>2016 POTUS Election Results</h2>
+                            <div id="container" style="width:80%; height:400px;">
+                            </div>
+                            <script>
+                                $(function () { 
+                                    var myChart = Highcharts.chart('container', {
+                                    chart: {
+                                        type: 'bar'
+                                    },
+                                    title: {
+                                        text: 'Electoral Votes (270 needed to win)'
+                                    },
+
+                                    colors: ['blue', 'red'],
+
+                                    xAxis: {
+                                        categories: ['Hillary Clinton', 'Donald Trump']
+                                    },
+                                    yAxis: {
+                                        title: {
+                                            text: 'Electoral Votes'
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'Electoral Votes',
+                                        data: [232, 290]
+                                    }]
+                                });
+                            });    
+                            </script>
             </div>
         </div>
     </div>
@@ -517,7 +527,6 @@
 
     <!-- Theme JavaScript -->
     <script src="js/freelancer.min.js"></script>
-
 </body>
 
 </html>
