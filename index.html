@@ -294,6 +294,8 @@
                             <h2>2016 POTUS Election Results</h2>
                             <div id="container" style="width:80%; height:400px;">
                             </div>
+                            <div id="container2" style="width:80%; height:400px;">
+                            </div>
                             <script>
                                 $(function () { 
     var myChart = Highcharts.chart('container', {
@@ -301,7 +303,7 @@
             type: 'bar'
         },
         title: {
-            text: 'Hillary Clinton vs Donald Trump'
+            text: 'Electoral College Results'
         },
         colors: ['blue', 'red'],
         xAxis: {
@@ -322,6 +324,35 @@
     });
 });   
                             </script>
+                            <script>
+                                $(function () { 
+    var myChart = Highcharts.chart('container2', {
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Popular Vote'
+        },
+        colors: ['blue', 'red'],
+        xAxis: {
+            categories: ['Candidates']
+        },
+        yAxis: {
+            title: {
+                text: 'Popular Vote'
+            }
+        },
+        series: [{
+            name: 'Hillary Clinton',
+            data: [62523126]
+        }, {
+            name: 'Donald Trump',
+            data: [61201031]
+        }]
+    });
+});   
+                            </script>
+
             </div>
         </div>
     </div>
