@@ -297,6 +297,8 @@
                             </div>
                             <div id="container2" style="width:80%; height:400px;">
                             </div>
+                            <div id="container3" style="width:80%; height:400px;">
+                            </div>
             </div>
         </div>
     </div>
@@ -486,61 +488,90 @@
     <script src="js/freelancer.min.js"></script>
 
     <script>
-                                $(function () { 
-    var myChart = Highcharts.chart('container', {
-        chart: {
-            type: 'bar'
-        },
-        title: {
-            text: 'Electoral College Results'
-        },
-        colors: ['blue', 'red'],
-        xAxis: {
-            categories: ['Candidates']
-        },
-        yAxis: {
+    $(function () { 
+        var myChart = Highcharts.chart('container', {
+            chart: {
+                type: 'bar'
+            },
             title: {
-                text: 'Electoral College Votes'
-            }
-        },
+                text: 'Electoral College Results'
+            },
+            colors: ['blue', 'red'],
+            xAxis: {
+                categories: ['Candidates']
+            },
+            yAxis: {
+                title: {
+                    text: 'Electoral College Votes'
+                }
+            },
         series: [{
-            name: 'Hillary Clinton',
-            data: [232]
-        }, {
-            name: 'Donald Trump',
-            data: [290]
-        }]
+                name: 'Hillary Clinton',
+                data: [232]
+            }, {
+                name: 'Donald Trump',
+                data: [290]
+            }]
     });
 });   
-                            </script>
-                            <script>
-                                $(function () { 
-    var myChart = Highcharts.chart('container2', {
-        chart: {
-            type: 'bar'
-        },
-        title: {
-            text: 'Popular Vote'
-        },
-        colors: ['blue', 'red'],
-        xAxis: {
-            categories: ['Candidates']
-        },
-        yAxis: {
+    </script>
+    <script>
+    $(function () { 
+        var myChart = Highcharts.chart('container2', {
+            chart: {
+                type: 'bar'
+            },
             title: {
                 text: 'Popular Vote'
-            }
-        },
-        series: [{
-            name: 'Hillary Clinton',
-            data: [62523126]
-        }, {
-            name: 'Donald Trump',
-            data: [61201031]
-        }]
+            },
+            colors: ['blue', 'red'],
+            xAxis: {
+                categories: ['Candidates']
+            },
+            yAxis: {
+                title: {
+                    text: 'Popular Vote'
+                }
+            },
+            series: [{
+                name: 'Hillary Clinton',
+                data: [62523126]
+            }, {
+                name: 'Donald Trump',
+                data: [61201031]
+            }]
     });
 });   
-                            </script>
+    </script>
+
+    <script>
+    $(function () { 
+        var myChart = Highcharts.chart('container3', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Women Voters (Exit Polls)'
+            },
+            colors: ['blue', 'red'],
+            xAxis: {
+                categories: ['Candidates']
+            },
+            yAxis: {
+                title: {
+                    text: 'percent'
+                }
+            },
+            series: [{
+                name: 'Hillary Clinton',
+                data: [54]
+            }, {
+                name: 'Donald Trump',
+                data: [41]
+            }]
+    });
+});   
+    </script>
 </body>
 
 </html>
