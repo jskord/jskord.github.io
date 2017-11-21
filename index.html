@@ -175,7 +175,7 @@
                     <p>I am a graduate of <a href = "http://www.anyonecanlearntocode.com/" style="color: brown">Actualize Coding Bootcamp and Apprenticechip</a>, and I also completed a four month apprenticeship with the <a href = "http://www.thedifferenceengine.io/" style="color: brown">Differnce Engine</a></p>
                 </div>
                 <div class="col-lg-4">
-                    <p>Utilize ruby on rails and javascript libraries such as Angular and jquery to fulfill client needs and expectations. Also specialize in geographical user-interfaces with API's such as Google Maps and arcGIS.</p>
+                    <p>Most of my work utilize ruby on rails and javascript libraries such as Angular and jquery to fulfill client needs and expectations. I also specialize in geographical user-interfaces with API's such as Google Maps.</p>
                 </div>
                 <div class="col-lg-8 col-lg-offset-2 text-center">
                     <a href="#" class="btn btn-lg btn-outline">
@@ -199,6 +199,39 @@
                 <div class="col-lg-8 col-lg-offset-2">
                     <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
                     <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
+
+                    <?php
+$email_address = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+
+// Check for empty fields
+if(empty($_POST['name'])        ||
+   empty($_POST['email'])       ||
+   empty($_POST['phone'])       ||
+   empty($_POST['message']) ||
+   !$email_address)
+   {
+    echo "No arguments Provided!";
+    return false;
+   }
+
+$name = $_POST['name'];
+if ($email_address === FALSE) {
+    echo 'Invalid email';
+    exit(1);
+}
+$phone = $_POST['phone'];
+$message = $_POST['message'];
+
+
+// Create the email and send the message
+$to = 'jskord@gmail.com'; // Add your email address inbetween the '' replacing yourname@yourdomain.com - This is where the form will send a message to.
+$email_subject = "Website Contact Form:  $name";
+$email_body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: $name\n\nEmail: $email_address\n\nPhone: $phone\n\nMessage:\n$message";
+$headers = "From: noreply@yourdomain.com\n"; // This is the email address the generated message will be from. We recommend using something like noreply@yourdomain.com.
+$headers .= "Reply-To: $email_address";
+mail($to,$email_subject,$email_body,$headers);
+return true;
+?>
                     <form name="sentMessage" id="contactForm" novalidate>
                         <div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
