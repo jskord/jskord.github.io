@@ -1,5 +1,5 @@
-
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,43 +7,46 @@
     <style>
         #movingImage {
             position: absolute;
-            left: 100px;
+            left: 60%; /* Position the image to the right of the text */
             top: 200px;
             width: 100px;
-            height: auto;
             transition: transform 0.5s ease-in-out;
+        }
+        .intro-text {
+            width: 50%;
+            float: left;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .content-container {
+            position: relative;
+            min-height: 300px;
         }
     </style>
 </head>
+<body>
     <h1>Rebeca Alonso-Skord</h1>
-    <h2 class="intro-text">
-    ¡Hola! Meet Rebeca, Your Personal Spanish Tutor! Looking to improve your Spanish skills with a fun and personalized approach? Rebeca is here to help! Whether you're a beginner or looking to refine your fluency, her engaging lessons make learning Spanish easy and enjoyable. With customized sessions tailored to your goals, you'll be speaking with confidence in no time.
-</h2>
-
-<style>
-    .intro-text {
-        width: 50%;  /* Makes the text take up half the screen */
-        float: left; /* Aligns it to the left */
-        padding: 20px; /* Adds some spacing */
-        box-sizing: border-box; /* Ensures padding doesn't exceed 50% width */
-    }
-</style>
-
-
-Start your language journey today—¡Vamos!
-        <button onclick="moveImage()">Move My Picture!</button>
-    <img id="movingImage" src="Rebeca moving image.png" alt="Moving Image">
-    
+    <div class="content-container">
+        <h2 class="intro-text">
+            ¡Hola! Meet Rebeca, Your Personal Spanish Tutor! Looking to improve your Spanish skills with a fun and personalized approach? Rebeca is here to help! Whether you're a beginner or looking to refine your fluency, her engaging lessons make learning Spanish easy and enjoyable. With customized sessions tailored to your goals, you'll be speaking with confidence in no time.
+        </h2>
+        <img id="movingImage" src="Rebeca moving image.png" alt="Moving Image">
+    </div>
+    <p>Start your language journey today—¡Vamos!</p>
+    <button onclick="moveImage()">Move My Picture!</button>
     <script>
-        function showMessage() {
-            alert("Hello! You clicked the button, and my name is rebeca!.");
-        }
         function moveImage() {
             let img = document.getElementById("movingImage");
-            let randomX = Math.random() * window.innerWidth * 0.8;
-            let randomY = Math.random() * window.innerHeight * 0.8;
-            img.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            let container = document.querySelector(".content-container");
+            let minX = container.offsetWidth + 20; // Keep it to the right of the text
+            let maxX = minX + 200; // Limits movement range within 200px
+            let minY = 200;
+            let maxY = 400; // Limits vertical movement range
+            let randomX = Math.random() * (maxX - minX) + minX;
+            let randomY = Math.random() * (maxY - minY) + minY;
+            img.style.transform = `translate(${randomX - minX}px, ${randomY - minY}px)`;
         }
     </script>
-
     <a href="index.html">Back</a>
+</body>
+</html>
