@@ -37,6 +37,7 @@
     </div>
     <p>Start your language journey today—¡Vamos!</p>
     <button onclick="moveImage()">Move My Picture!</button>
+    <button onclick="changeBackgroundColor()">Change Background Color</button>
     <script>
         function moveImage() {
             let img = document.getElementById("movingImage");
@@ -48,6 +49,11 @@
             let randomX = Math.random() * (maxX - minX) + minX;
             let randomY = Math.random() * (maxY - minY) + minY;
             img.style.transform = `translate(${randomX - minX}px, ${randomY - minY}px)`;
+        }
+
+        function changeBackgroundColor() {
+            const colors = ["yellow", "lightblue", "lightgreen", "pink", "orange", "lavender"];
+            document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         }
     </script>
     <a href="index.html">Back</a>
