@@ -1,11 +1,34 @@
-<h1>This is Rebeca's Webpage!!</h1>
-<a href="index.html">Back</a>
 
-    <h1>Welcome to My Page</h1>
-    <button onclick="showMessage()">Click Me</button>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Example</title>
+    <style>
+        #movingImage {
+            position: absolute;
+            left: 200px;
+            top: 400px;
+            width: 200px;
+            height: auto;
+            transition: transform 0.5s ease-in-out;
+        }
+    </style>
+</head>
+    <h1>Rebeca Alonso-Skord</h1>
+        <button onclick="moveImage()">Move My Picture!</button>
+    <img id="movingImage" src="Rebeca moving image.png" alt="Moving Image">
     
     <script>
         function showMessage() {
             alert("Hello! You clicked the button, and my name is rebeca!.");
         }
+        function moveImage() {
+            let img = document.getElementById("movingImage");
+            let randomX = Math.random() * window.innerWidth * 0.8;
+            let randomY = Math.random() * window.innerHeight * 0.8;
+            img.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
     </script>
+
+    <a href="index.html">Back</a>
