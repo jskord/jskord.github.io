@@ -3,36 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rebeca's Webpage</title>
-    <style>
-        body {
-            background-color: yellow;
-        }
-        #movingImage {
-            position: absolute;
-            left: 60%; /* Position the image to the right of the text */
-            top: 200px;
-            width: 100px;
-            transition: transform 0.5s ease-in-out;
-        }
-        .intro-text {
-            width: 50%;
-            float: left;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .content-container {
-            position: relative;
-            min-height: 300px;
-        }
-    </style>
-</head>
-<body>
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JavaScript Example</title>
     <style>
         body {
@@ -68,6 +38,22 @@
             transform: scale(1.2) rotate(10deg);
             background-color: blue;
         }
+        .top-right-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .bottom-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: black;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 100px;
+        }
     </style>
 </head>
 <body>
@@ -79,8 +65,10 @@
         <img id="movingImage" src="Rebeca moving image.png" alt="Moving Image">
     </div>
     <p>Start your language journey today— <button class="effect-button" onclick="specialEffect()">¡Vamos!</button></p>
-    <button onclick="moveImage()">Move My Picture!</button>
-    <button onclick="changeBackgroundColor()">Change Background Color</button>
+    <div class="top-right-buttons">
+        <button onclick="moveImage()">Move My Picture!</button>
+        <button onclick="changeBackgroundColor()">Change Background Color</button>
+    </div>
     <script>
         function moveImage() {
             let img = document.getElementById("movingImage");
@@ -109,6 +97,6 @@
             }, 500);
         }
     </script>
-    <a href="index.html">Back</a>
+    <a href="index.html" class="bottom-button">Back</a>
 </body>
 </html>
