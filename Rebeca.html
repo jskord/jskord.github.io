@@ -28,6 +28,49 @@
     </style>
 </head>
 <body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Example</title>
+    <style>
+        body {
+            background-color: yellow;
+        }
+        #movingImage {
+            position: absolute;
+            left: 60%; /* Position the image to the right of the text */
+            top: 200px;
+            width: 100px;
+            transition: transform 0.5s ease-in-out;
+        }
+        .intro-text {
+            width: 50%;
+            float: left;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .content-container {
+            position: relative;
+            min-height: 300px;
+        }
+        .effect-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, background-color 0.3s;
+        }
+        .effect-button:active {
+            transform: scale(1.2) rotate(10deg);
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
     <h1>Rebeca Alonso-Skord</h1>
     <div class="content-container">
         <h2 class="intro-text">
@@ -35,7 +78,7 @@
         </h2>
         <img id="movingImage" src="Rebeca moving image.png" alt="Moving Image">
     </div>
-    <p>Start your language journey today—¡Vamos!</p>
+    <p>Start your language journey today— <button class="effect-button" onclick="specialEffect()">¡Vamos!</button></p>
     <button onclick="moveImage()">Move My Picture!</button>
     <button onclick="changeBackgroundColor()">Change Background Color</button>
     <script>
@@ -54,6 +97,16 @@
         function changeBackgroundColor() {
             const colors = ["yellow", "lightblue", "lightgreen", "pink", "orange", "lavender"];
             document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function specialEffect() {
+            let button = document.querySelector(".effect-button");
+            button.style.transform = "scale(1.5) rotate(15deg)";
+            button.style.backgroundColor = "purple";
+            setTimeout(() => {
+                button.style.transform = "scale(1) rotate(0deg)";
+                button.style.backgroundColor = "red";
+            }, 500);
         }
     </script>
     <a href="index.html">Back</a>
