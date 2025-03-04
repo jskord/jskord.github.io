@@ -85,7 +85,7 @@
 
 <header>
     <h1 id="greeting">Justin</h1>
-    <p>I'm Justin Skord—explorer, creator, and thinker. Welcome to my digital world!</p>
+    <p>—explorer, creator, and thinker. Welcome to my digital world!</p>
 </header>
 
 <section id="about">
@@ -160,10 +160,10 @@
 </footer>
 
 <script>
-    // Dynamic greeting based on time of day
     function updateGreeting() {
         const hour = new Date().getHours();
         let greeting;
+
         if (hour < 12) {
             greeting = "Good morning!";
         } else if (hour < 18) {
@@ -171,8 +171,13 @@
         } else {
             greeting = "Good evening!";
         }
-        document.getElementById("greeting").innerText = greeting
+
+        // Update the greeting in the header
+        document.getElementById("greeting").innerText = greeting + " I'm Justin Skord!";
     }
+
+    // Call function when the page loads
+    window.onload = updateGreeting;
 
     // Show back-to-top button when scrolling down
     window.onscroll = function () {
