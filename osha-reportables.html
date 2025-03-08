@@ -9,6 +9,79 @@
             height: 500px;
             width: 100%;
         }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            scroll-behavior: smooth;
+        }
+        header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+        section {
+            padding: 50px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        h2 {
+            color: #444;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .links a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 15px;
+            background: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .links a:hover {
+            background: #0056b3;
+        }
+        footer {
+            background: #222;
+            color: white;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        input, textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #218838;
+        }
+        #backToTop {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #backToTop:hover {
+            background: #0056b3;
+        }
     </style>
     <script>
         function initMap() {
@@ -32,7 +105,6 @@
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDb__ipdOl9J9xcE7PRv2YXgrnPcSKQkGg&callback=initMap">
     </script>
         <div class="container">
-        <h2>Other Projects</h2>
          <div class="links">
             <a href="index.html">Back</a>
         </div>
