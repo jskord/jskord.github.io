@@ -94,11 +94,32 @@
                 position: location,
                 map: map
             });
+             // Add markers with info windows
+            var markers = [
+                { lat: 42.732392, lng: -87.784121, title: "Location 1", description: "Description for location 1" },
+                { lat: 42.058971, lng: -87.813236, title: "Location 2", description: "Description for location 2" }
+            ];
+
+            markers.forEach(function(coord) {
+                var marker = new google.maps.Marker({
+                    position: { lat: coord.lat, lng: coord.lng },
+                    map: map,
+                    title: coord.title
+                });
+
+                var infoWindow = new google.maps.InfoWindow({
+                    content: `<h3>${coord.title}</h3><p>${coord.description}</p>`
+                });
+
+                marker.addListener('click', function() {
+                    infoWindow.open(map, marker);
+                });
+            });
         }
     </script>
 </head>
 <body>
-    <h1>OSHA Reportable Injuries</h1>
+    <h1>Oh, the places I've been</h1>
     <div id="map"></div>
     
     <script async defer 
