@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justin's Places</title>
-    <style>
-        #map {
-            height: 500px;
-            width: 100%;
-        }
+        <style>
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -22,10 +18,28 @@
             padding: 20px;
             font-size: 24px;
         }
-        container {
+        section {
+            padding: 50px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        h2 {
+            color: #444;
+        }
+        .container {
             max-width: 800px;
             margin: auto;
-            padding: 20px;
+        }
+        .links a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 15px;
+            background: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .links a:hover {
+            background: #0056b3;
         }
         footer {
             background: #222;
@@ -33,7 +47,39 @@
             padding: 20px;
             margin-top: 20px;
         }
+        input, textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #218838;
+        }
+        #backToTop {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #backToTop:hover {
+            background: #0056b3;
+        }
     </style>
+
     <script>
         function initMap() {
             var map = new google.maps.Map(document.getElementById("map"), {
@@ -72,10 +118,10 @@
     </script>
 </head>
 <body>
-    <header>OSHA Reportables</header>
+    <header>Oh ... the places I've been.</header>
     <div id="map"></div>
     
-    <div class="container">
+    <div class="links">
         <a href="index.html">Back</a>
     </div>
 
