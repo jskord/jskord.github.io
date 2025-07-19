@@ -8,7 +8,7 @@ const res = await openai.createChatCompletion({
   model: 'gpt-4',
   messages: [
     { role: 'system', content: 'You are a brief daily news bot.' },
-    { role: 'user', content: 'Give me the estimated Ukraine war casualties today.' }
+    { role: 'user', content: 'Give me the estimated Ukraine war casualties for yesterday.' }
   ]
 });
 
