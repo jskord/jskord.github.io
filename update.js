@@ -7,7 +7,7 @@ const openai = new OpenAI({
 
 async function getChatGPTUpdate() {
   const chatCompletion = await openai.chat.completions.create({
-    model: 'gpt-4',
+    model: 'gpt-3.5-turbo',
     messages: [
       { role: 'system', content: 'You are a daily news assistant.' },
       { role: 'user', content: 'Give me the estimated Ukraine war casualties today.' }
