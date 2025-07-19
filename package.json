@@ -8,9 +8,8 @@
     "start": "node update.js"
   },
   "dependencies": {
-    "openai": "^4.0.0"
+    "openai": "^4.104.0"
   },
   "author": "jskord",
   "license": "MIT"
 }
-
