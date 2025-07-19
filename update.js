@@ -10,7 +10,7 @@ async function getChatGPTUpdate() {
     model: 'gpt-3.5-turbo',
     messages: [
       { role: 'system', content: 'You are a daily news assistant.' },
-      { role: 'user', content: 'Give me the estimated Ukraine war casualties today.' }
+      { role: 'user', content: 'Give me the estimated Ukraine war casualties yesterday.' }
     ]
   });
 
