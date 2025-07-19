@@ -1,1 +1,28 @@
-<p>As of today, the conflict in Ukraine has resulted in a complex situation with varying reports of casualties. Typically, casualties in this ongoing conflict have varied day by day, influenced by military operations, skirmishes, and other factors. Without specific data for yesterday available, it's challenging to give an exact figure. However, based on past trends and considering the sporadic nature of the fighting, we can infer that there may have been several casualties yesterday, including both military personnel and civilians. It's important to await official reports to confirm the exact numbers. Yesterday's date was [insert yesterday's specific date here].</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yesterday's News</title>
+</head>
+<body>
+  <h1>Yesterday's News (100 Years Ago)</h1>
+
+  <div id="content">
+    <em>Loading...</em>
+  </div>
+
+  <script>
+    // Load the generated AI response from historical-news.html
+    fetch('historical-news.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('content').innerHTML = html;
+      })
+      .catch(error => {
+        document.getElementById('content').innerHTML = '<p><em>Could not load the update.</em></p>';
+        console.error('Error loading update:', error);
+      });
+  </script>
+</body>
+</html>
