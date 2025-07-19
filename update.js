@@ -1,18 +1,21 @@
 import fs from 'fs';
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 
-const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
-const openai = new OpenAIApi(config);
-
-const res = await openai.createChatCompletion({
-  model: 'gpt-4',
-  messages: [
-    { role: 'system', content: 'You are a brief daily news bot.' },
-    { role: 'user', content: 'Give me the estimated Ukraine war casualties for yesterday.' }
-  ]
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-const result = res.data.choices[0].message.content;
+async function getChatGPTUpdate() {
+  const chatCompletion = await openai.chat.completions.create({
+    model: 'gpt-4',
+    messages: [
+      { role: 'system', content: 'You are a daily news assistant.' },
+      { role: 'user', content: 'Give me the estimated Ukraine war casualties today.' }
+    ]
+  });
 
-// Save to a file your website can use
-fs.writeFileSync('daily-update.html', `<p>${result}</p>`);
+  const result = chatCompletion.choices[0].message.content;
+  fs.writeFileSync('daily-update.html', `<p>${result}</p>`);
+}
+
+getChatGPTUpdate();
