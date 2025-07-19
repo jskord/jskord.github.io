@@ -5,24 +5,25 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function getChatGPTUpdate() {
+async function getHistoricalNews() {
   const chatCompletion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [
       {
         role: 'system',
-        content: 'You are a helpful assistant summarizing global events using your extensive knowledge and reasoning. You are allowed to make reasonable inferences about yesterday based on known trends, public reporting, and history.'
+        content: 'You are a newspaper editor from 1925. Write a front-page news brief dated exactly 100 years ago today. Include at least two global or national stories, and one cultural or scientific note. Write it in the tone of a 1920s newspaper, but keep it clear for a modern reader.'
       },
       {
         role: 'user',
-        content: 'Estimate the Ukraine war casualties for yesterday and give the date that yesterday was. Be as specific as possible using your knowledge of past daily casualty reports and patterns. If data is unclear, explain your reasoning.'
+        content: `What was the news on this day 100 years ago — ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}?`
       }
     ]
   });
 
   const result = chatCompletion.choices[0].message.content;
-  fs.writeFileSync('daily-update.html', `<p>${result}</p>`);
+  fs.writeFileSync('historical-news.html', `<p>${result}</p>`);
 }
 
-getChatGPTUpdate();
+getHistoricalNews();
+
 
