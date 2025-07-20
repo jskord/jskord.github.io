@@ -1,29 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Yesterday's News</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yesterday's News</title>
 </head>
 <body>
-  <h1>The News (100 Years Ago)</h1>
+  <h1>The News from <span id="historicalDateDisplay"></span></h1>   <div id="content">
+    <em>Loading...</em>
+  </div>
 
-  <div id="content">
-    <em>Loading...</em>
-  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Calculate the historical date (100 years ago from today)
+        const today = new Date();
+        const historicalYear = today.getFullYear() - 100;
+        const historicalDate = new Date(historicalYear, today.getMonth(), today.getDate());
 
-  <script>
-    // Load the generated AI response from historical-news.html
-    fetch('historical-news.html')
-      .then(response => response.text())
-      .then(html => {
-        document.getElementById('content').innerHTML = html;
-      })
-      .catch(error => {
-        document.getElementById('content').innerHTML = '<p><em>Could not load the update.</em></p>';
-        console.error('Error loading update:', error);
-      });
-  </script>
-  <a href='index.html'>Back</a>
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedHistoricalDate = historicalDate.toLocaleDateString(undefined, options);
+
+        const dateElement = document.getElementById('historicalDateDisplay');
+        if (dateElement) {
+            dateElement.textContent = formattedHistoricalDate;
+        }
+    });
+
+    // Load the generated AI response from historical-news.html
+    fetch('historical-news.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('content').innerHTML = html;
+      })
+      .catch(error => {
+        document.getElementById('content').innerHTML = '<p><em>Could not load the update.</em></p>';
+        console.error('Error loading update:', error);
+      });
+  </script>
+  <a href='index.html'>Back</a>
 </body>
 </html>
