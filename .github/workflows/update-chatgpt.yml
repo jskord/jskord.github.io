@@ -17,8 +17,9 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install OpenAI package
-        run: npm install openai
+      - name: Install dependencies
+        run: npm install
+
 
       - name: Run update script
         run: node update.js
