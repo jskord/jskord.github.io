@@ -34,23 +34,26 @@ jobs:
           # If using OpenAI, keep OPENAI_API_KEY.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-      - name: Commit and push changes # This step was mis-indented!
+- name: Commit and push changes
         run: |
-          git config user.name "github-actions[bot]" # Use the built-in bot user
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # Add any files that your update.js script might have changed or created
-          # For example, if update.js writes to 'daily_report.html':
-          # git add daily_report.html
-          git add . # Adds all changed/new files
+          git add .
+
+          # --- ADD THESE LINES ---
+          # Fetch the latest changes from the remote
+          git fetch origin master
+          # Rebase local changes onto the remote (applies your changes on top)
+          git pull --rebase origin master
+          # --- END ADDED LINES ---
 
           # Commit only if there are changes
           git commit -m "Automated: Update daily report" || echo "No changes to commit"
 
-          # Use the built-in GITHUB_TOKEN for pushing, it's more secure.
-          # The 'contents: write' permission is crucial for this to work.
+          # Push the changes
           git push
-
 
 
 
