@@ -4,7 +4,6 @@ on:
   schedule:
     - cron: '0 13 * * *'  # Every day at 8am CST (13:00 UTC)
   workflow_dispatch:       # Allows manual triggering
-
 jobs:
   update:
     runs-on: ubuntu-latest
