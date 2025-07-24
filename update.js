@@ -21,7 +21,7 @@ async function getHistoricalNews() {
   });
 
   const result = chatCompletion.choices[0].message.content;
-  fs.writeFileSync('historical-news.html', `<p>${result}</p>`);
+  fs.writeFileSync('historical-news.html', result);
 }
 
 getHistoricalNews();
