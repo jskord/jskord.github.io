@@ -1,58 +1,45 @@
-name: Daily GPT Update # Or "Daily Gemini Update" if using Gemini
+name: Daily GPT Update
 
 on:
   schedule:
-    # Runs every day at 8 AM CST (13:00 UTC)
-    # Cron schedule for 13:00 UTC (8 AM CST)
-    - cron: '0 13 * * *'
-  workflow_dispatch: # Allows manual triggering from the GitHub UI
+    - cron: '0 13 * * *'  # Every day at 8am CST (13:00 UTC)
+  workflow_dispatch:       # Allows manual triggering
 
 jobs:
   update:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Grant write permission to push changes
+      contents: write
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4 # Use the latest version of checkout action
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4 # Use the latest version of setup-node
+        uses: actions/setup-node@v4
         with:
-          node-version: '18' # Ensure this matches your project's Node.js version
+          node-version: '18'
 
       - name: Install dependencies
-        # This assumes you have a package.json file in your repo
         run: npm install
 
       - name: Run update script
         run: node update.js
         env:
-          # IMPORTANT: If using Gemini, this should be GEMINI_API_KEY
-          # and your Node.js script should use the @google/generative-ai SDK.
-          # If using OpenAI, keep OPENAI_API_KEY.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-- name: Commit and push changes
+      - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Add any files that your update.js script might have changed or created
           git add .
 
-          # --- ADD THESE LINES ---
-          # Fetch the latest changes from the remote
+          # Fetch remote to avoid conflicts
           git fetch origin master
-          # Rebase local changes onto the remote (applies your changes on top)
           git pull --rebase origin master
-          # --- END ADDED LINES ---
 
-          # Commit only if there are changes
           git commit -m "Automated: Update daily report" || echo "No changes to commit"
-
-          # Push the changes
           git push
 
 
