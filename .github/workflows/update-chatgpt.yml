@@ -1,52 +1,105 @@
-name: Daily GPT Update
+// update.js
 
-on:
-  schedule:
-    - cron: '0 13 * * *'  # 8am CST
-  workflow_dispatch:
+// 1. Load environment variables from .env file (for local development)
+// This line should be at the very top. In GitHub Actions, the API key is passed directly
+// as an environment variable, so dotenv will simply not find a .env file and won't interfere.
+import 'dotenv/config';
 
-jobs:
-  update:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+// 2. Import necessary modules
+import OpenAI from 'openai';
+import { promises as fs } from 'fs'; // Use fs.promises for async file operations
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+// 3. Initialize the OpenAI client
+// It will automatically pick up process.env.OPENAI_API_KEY
+// if set (either by dotenv locally, or by GitHub Actions env block)
+const openai = new OpenAI();
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+// 4. Define the output file path
+const OUTPUT_FILE = 'historical-news.html';
 
-      - name: Install dependencies
-        run: npm install
+// 5. Main function to fetch data and update the file
+async function generateAndSaveContent() {
+  try {
+    console.log('Starting content generation...');
 
-      - name: Run update script
-        run: node update.js
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    // --- Customize your OpenAI API call here ---
+    // Example: Ask for an interesting historical news fact
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini", // Or "gpt-3.5-turbo", "gpt-4", etc.
+      messages: [
+        { role: "system", content: "You are a helpful assistant that provides concise historical news facts." },
+        { role: "user", content: "Give me an interesting and concise historical news fact from any point in time. Format it as a single compelling sentence." },
+      ],
+      temperature: 0.7, // Adjust for creativity vs. focus
+      max_tokens: 100,  // Keep the response concise
+    });
 
-      - name: Read historical-news.html content
-        id: read_html
-        run: |
-          content=$(base64 -w 0 historical-news.html)
-          echo "content=$content" >> $GITHUB_OUTPUT
+    const fact = completion.choices[0].message.content.trim();
+    console.log('Generated Fact:', fact);
 
-      - name: Commit file via GitHub API
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const path = 'historical-news.html';
-            const content = `${{ steps.read_html.outputs.content }}`;
+    // 6. Prepare the HTML content
+    // You can customize the HTML structure as needed
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical News Fact</title>
+    <style>
+        body { font-family: sans-serif; margin: 1em; }
+        .fact-container {
+            background-color: #e0f2f7; /* Light blue background */
+            border-left: 5px solid #0288d1; /* Darker blue border */
+            margin: 1em 0;
+            padding: 1em;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        .fact-date {
+            font-size: 0.8em;
+            color: #757575;
+            text-align: right;
+            margin-top: 0.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="fact-container">
+        <p>${fact}</p>
+        <div class="fact-date">Updated: ${new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })} CST</div>
+    </div>
+</body>
+</html>
+    `.trim(); // .trim() removes leading/trailing whitespace from the template literal
 
-            const { data: fileData } = await github.repos.getContent({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path
-            }).catch(() => ({ data: {} }));
+    // 7. Write the content to the file
+    await fs.writeFile(OUTPUT_FILE, htmlContent);
+    console.log(`Successfully updated ${OUTPUT_FILE}`);
 
-            await github.repos.createOrUpdateFileContents({
-              owner:
+  } catch (error) {
+    console.error('Error during content generation or file write:', error);
+    // Optionally, write an error message to the HTML file
+    const errorMessage = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+</head>
+<body>
+    <div style="color: red;">
+        <p>An error occurred while fetching the daily fact. Please try again later.</p>
+        <p>Error details: ${error.message}</p>
+        <div class="fact-date">Updated: ${new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })} CST</div>
+    </div>
+</body>
+</html>
+    `.trim();
+    await fs.writeFile(OUTPUT_FILE, errorMessage).catch(e => console.error("Failed to write error message:", e));
+    process.exit(1); // Exit with a non-zero code to indicate failure in GitHub Actions
+  }
+}
+
+// 8. Call the main function
+generateAndSaveContent();
