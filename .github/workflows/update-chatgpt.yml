@@ -42,7 +42,7 @@ jobs:
       - name: Commit and Push changes # Step 6: Stage, commit, pull, and push
         run: |
           # 6a. Stage all changes made by the update.js script
-          git add --all
+          git add .
 
           # 6b. Commit the changes. '|| true' ensures the step doesn't fail if no changes were made (i.e., nothing to commit).
           git commit -m "Automated: Update ChatGPT daily report" || true

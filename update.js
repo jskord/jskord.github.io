@@ -28,7 +28,7 @@ async function generateAndSaveContent() {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Recommended efficient model. You can change to "gpt-3.5-turbo", "gpt-4", etc.
       messages: [
-        { role: "system", content: "You are an engaging historian and storyteller. Provide a single, fascinating historical news event." },
+        { role: "system", content: "You are an engaging historian and storyteller. Provide one, fascinating historical news event." },
         { role: "user", content: "Tell me an interesting, concise, and lesser-known historical news fact from any era. Make it a single compelling sentence that could be a headline." },
       ],
       temperature: 0.8, // Higher temperature for more creative/diverse outputs
