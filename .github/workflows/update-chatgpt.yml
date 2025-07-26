@@ -28,31 +28,25 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
+      - name: Read historical-news.html content
+        id: read_html
+        run: |
+          content=$(base64 -w 0 historical-news.html)
+          echo "content=$content" >> $GITHUB_OUTPUT
+
       - name: Commit file via GitHub API
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const fs = require('fs');
-            const content = fs.readFileSync('historical-news.html', 'utf8');
             const path = 'historical-news.html';
-            const base64Content = Buffer.from(content).toString('base64');
+            const content = `${{ steps.read_html.outputs.content }}`;
 
-            const { data: { sha } } = await github.repos.getContent({
+            const { data: fileData } = await github.repos.getContent({
               owner: context.repo.owner,
               repo: context.repo.repo,
               path
-            });
+            }).catch(() => ({ data: {} }));
 
             await github.repos.createOrUpdateFileContents({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path,
-              message: "Update ChatGPT daily report",
-              content: base64Content,
-              sha
-            });
-
-
-
-
+              owner:
