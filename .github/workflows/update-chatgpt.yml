@@ -2,8 +2,8 @@ name: Daily GPT Update
 
 on:
   schedule:
-    - cron: '0 13 * * *'  # Every day at 8am CST (13:00 UTC)
-  workflow_dispatch:       # Allows manual triggering
+    - cron: '0 13 * * *'  # 8am CST
+  workflow_dispatch:
 
 jobs:
   update:
@@ -28,16 +28,25 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-      - name: Commit and push changes
+      - name: Read historical-news.html content
+        id: read_html
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          content=$(base64 -w 0 historical-news.html)
+          echo "content=$content" >> $GITHUB_OUTPUT
 
-          git add .
+      - name: Commit file via GitHub API
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const path = 'historical-news.html';
+            const content = `${{ steps.read_html.outputs.content }}`;
 
-          # Fetch remote to avoid conflicts
-          git fetch origin master
-          git pull --rebase origin master
+            const { data: fileData } = await github.repos.getContent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path
+            }).catch(() => ({ data: {} }));
 
-          git commit -m "Automated: Update daily report" || echo "No changes to commit"
-          git push
+            await github.repos.createOrUpdateFileContents({
+              owner:
