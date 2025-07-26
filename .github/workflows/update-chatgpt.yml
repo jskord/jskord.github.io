@@ -39,20 +39,33 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit and Push changes # Step 6: Stage, commit, pull, and push
+- name: Commit and Push changes
         run: |
-          # 6a. Stage all changes made by the update.js script
-          git add .
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 6b. Commit the changes. '|| true' ensures the step doesn't fail if no changes were made (i.e., nothing to commit).
+          git add .
           git commit -m "Automated: Update ChatGPT daily report" || true
 
-          # 6c. Pull the latest from the remote branch and rebase your local commits on top.
-          # This is essential to prevent "Updates were rejected" errors if the remote branch
-          # has new commits that occurred after this workflow started.
-          # IMPORTANT: Change 'master' to 'main' if your default branch is 'main'.
-          git pull --rebase origin master
+          echo "--- Pre-pull/rebase Debug Info ---"
+          echo "Local branch status before pull:"
+          git status
+          echo "Last 3 local commits before pull:"
+          git log -3 --pretty=oneline
+          echo "Remote master/main history before pull (fetch from origin):"
+          git fetch origin
+          git log origin/master -3 --pretty=oneline # Or origin/main
+          echo "--- Performing pull/rebase ---"
 
-          # 6d. Finally, push your changes.
-          # The 'GITHUB_TOKEN' (enabled by 'permissions: contents: write' above) is used for authentication.
+          git pull --rebase origin master # Or 'main'
+
+          echo "--- Post-pull/rebase Debug Info ---"
+          echo "Local branch status after pull/rebase:"
+          git status
+          echo "Last 3 local commits after pull/rebase:"
+          git log -3 --pretty=oneline
+          echo "Comparison with remote (should be clean if rebase worked):"
+          git diff origin/master # Or origin/main
+
+          echo "--- Attempting push ---"
           git push
