@@ -2,8 +2,8 @@ name: Daily GPT Update
 
 on:
   schedule:
-    - cron: '0 13 * * *'  # Every day at 8am CST (13:00 UTC)
-  workflow_dispatch:       # Allows manual triggering
+    - cron: '0 13 * * *'  # 8am CST
+  workflow_dispatch:
 
 jobs:
   update:
@@ -28,19 +28,30 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-      - name: Commit and push changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Commit file via GitHub API
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const content = fs.readFileSync('historical-news.html', 'utf8');
+            const path = 'historical-news.html';
+            const base64Content = Buffer.from(content).toString('base64');
 
-          git add .
+            const { data: { sha } } = await github.repos.getContent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path
+            });
 
-          # Fetch remote to avoid conflicts
-          git fetch origin master
-          git pull --rebase origin master
-
-          git commit -m "Automated: Update daily report" || echo "No changes to commit"
-          git push
+            await github.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path,
+              message: "Update ChatGPT daily report",
+              content: base64Content,
+              sha
+            });
 
 
 
