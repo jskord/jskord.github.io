@@ -29,7 +29,7 @@ async function generateAndSaveContent() {
       model: "gpt-4o-mini", // Recommended efficient model. You can change to "gpt-3.5-turbo", "gpt-4", etc.
       messages: [
         { role: "system", content: "You are a journalist from 100 years ago today. " },
-        { role: "user", content: "Generate a summary of world news from 100 years ago today." },
+        { role: "user", content: "Generate a summary of world news from 100 years ago today. Add a relevant illustration to go with the brief summary" },
       ],
       temperature: 0.8, // Higher temperature for more creative/diverse outputs
       max_tokens: 120, // Max tokens for the response to keep it concise
