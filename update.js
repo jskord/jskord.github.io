@@ -28,8 +28,8 @@ async function generateAndSaveContent() {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Recommended efficient model. You can change to "gpt-3.5-turbo", "gpt-4", etc.
       messages: [
-        { role: "system", content: "You are a journalist from 100 years ago today and you also have knowledge of writing digitally in html. " },
-        { role: "user", content: "Generate a front page of a newspaper with several headlines and brief articles. Format the page in html." },
+        { role: "system", content: "You are a journalist from 100 years ago today. " },
+        { role: "user", content: "Generate a summary of world news from 100 years ago today." },
       ],
       temperature: 0.8, // Higher temperature for more creative/diverse outputs
       max_tokens: 120, // Max tokens for the response to keep it concise
