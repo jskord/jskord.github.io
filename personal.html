@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Personal — Justin Skord</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      scroll-behavior: smooth;
+      background: #f8f9fb;
+    }
+    header {
+      background: #333;
+      color: white;
+      padding: 20px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    header a { color: white; text-decoration: none; }
+    section { padding: 50px 20px; border-bottom: 1px solid #ddd; }
+    h2 { color: #444; }
+    .container { max-width: 900px; margin: auto; }
+    .card {
+      background: white;
+      border: 1px solid #e6e6e6;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: left;
+      margin: 0 auto;
+    }
+    .gate-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      max-width: 420px;
+      margin: 10px auto 0;
+    }
+    input[type=password] {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;
+    }
+    button {
+      background: #007BFF; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;
+    }
+    button:hover { background: #0056b3; }
+    .muted { color: #666; font-size: 14px; }
+    .hidden { display: none; }
+    .links a {
+      display: inline-block; margin: 10px; padding: 10px 15px; background: #007BFF; color: white; text-decoration: none; border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>🔒 Personal</div>
+    <nav><a href="./">← Back to Home</a></nav>
+  </header>
+
+  <!-- Password Gate -->
+  <section id="gate">
+    <div class="container">
+      <div class="card">
+        <h2 style="margin-top:0;">Enter Password</h2>
+        <p class="muted">This page contains my Family Tree and Timeline. Enter the password to view.</p>
+        <form id="pw-form" class="gate-form" autocomplete="off">
+          <input id="pw" name="pw" type="password" placeholder="Password" required autofocus />
+          <button type="submit">Unlock</button>
+        </form>
+        <p id="msg" class="muted"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Protected Content -->
+  <section id="content" class="hidden" aria-hidden="true">
+    <div class="container">
+      <div class="card">
+        <h2>My Family Tree</h2>
+        <!-- Your original Family Tree block -->
+        <a href="Family-Tree-3-4.html"><img src="Full-Green-Tree.png" width="300" height="300" alt="Family Tree"></a>
+      </div>
+    </div>
+
+    <div class="container" style="margin-top:30px;">
+      <div class="card">
+        <h2>My Timeline</h2>
+        <!-- Your original Timeline iframe -->
+        <iframe
+          src="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=1qu2HJjObRSuo_IEzwOMKVKw_7zuJlZ4me30t-rfQOvM&font=Default&lang=en&initial_zoom=2&height=650"
+          width="100%" height="450" style="border:0" title="Personal Timeline"></iframe>
+      </div>
+    </div>
+
+    <div class="container" style="margin-top:20px;">
+      <p class="muted">Tip: The unlock is remembered only in this browser. Clearing site data will require re-entering the password.</p>
+    </div>
+  </section>
+
+  <script>
+    // --- SET YOUR SHA-256 HASH HERE (hex string) ---
+    // To generate: open DevTools console and run:
+    // (async () => {const pwd="YOUR_PASSWORD";
+    //   const hex=[...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pwd)))]
+    //     .map(b=>b.toString(16).padStart(2,"0")).join(""); console.log(hex);})();
+    const PASSWORD_HASH_HEX = "YOUR_SHA256_HASH_HERE";
+    const STORAGE_KEY = "personal_unlocked_v1";
+
+    const toHex = (buf) => Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+
+    async function sha256Hex(text) {
+      const data = new TextEncoder().encode(text);
+      const hash = await crypto.subtle.digest("SHA-256", data);
+      return toHex(hash);
+    }
+
+    function showContent() {
+      document.getElementById("gate").classList.add("hidden");
+      const content = document.getElementById("content");
+      content.classList.remove("hidden");
+      content.setAttribute("aria-hidden","false");
+    }
+
+    // Auto-unlock if previously validated
+    (function() {
+      if (localStorage.getItem(STORAGE_KEY) === "1") showContent();
+    })();
+
+    document.getElementById("pw-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const input = document.getElementById("pw");
+      const msg = document.getElementById("msg");
+      msg.textContent = "Checking…";
+      try {
+        const enteredHash = await sha256Hex(input.value);
+        if (enteredHash === PASSWORD_HASH_HEX.toLowerCase()) {
+          localStorage.setItem(STORAGE_KEY, "1");
+          showContent();
+          msg.textContent = "";
+        } else {
+          msg.textContent = "Incorrect password. Try again.";
+        }
+      } catch (err) {
+        msg.textContent = "Error verifying password.";
+      } finally {
+        input.value = "";
+      }
+    });
+  </script>
+</body>
+</html>

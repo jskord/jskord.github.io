@@ -23,14 +23,12 @@
             padding: 50px 20px;
             border-bottom: 1px solid #ddd;
         }
-        h2 {
-            color: #444;
-        }
+        h2 { color: #444; }
         .container {
             max-width: 800px;
             margin: auto;
         }
-        .links a {
+        .links a, .btn-link {
             display: inline-block;
             margin: 10px;
             padding: 10px 15px;
@@ -39,9 +37,7 @@
             text-decoration: none;
             border-radius: 5px;
         }
-        .links a:hover {
-            background: #0056b3;
-        }
+        .links a:hover, .btn-link:hover { background: #0056b3; }
         footer {
             background: #222;
             color: white;
@@ -61,9 +57,7 @@
             border: none;
             cursor: pointer;
         }
-        .btn:hover {
-            background: #218838;
-        }
+        .btn:hover { background: #218838; }
         #backToTop {
             display: none;
             position: fixed;
@@ -76,9 +70,8 @@
             cursor: pointer;
             border-radius: 5px;
         }
-        #backToTop:hover {
-            background: #0056b3;
-        }
+        #backToTop:hover { background: #0056b3; }
+        .muted { color: #666; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -86,20 +79,26 @@
 <header>
     <h1 id="greeting">Justin</h1>
     <p>—explorer, creator, and thinker. Welcome to my digital world!</p>
+    <!-- New quick link to the gated page -->
+    <p style="margin-top:10px;">
+        <a class="btn-link" href="/personal.html" aria-label="Personal page (password required)">🔒 Personal (password required)</a>
+    </p>
 </header>
 
 <section id="about">
     <div class="container">
         <h2>About Me</h2>
         <img src="Professional Portrait 7-8-25.jpg" alt="Your Image" width="300" height="400" style="border-radius: 50%;">
-        <p>Hi, I’m Justin, an environmental scientist and EHS specialist based in Racine, Wisconsin. I work for Arcadis, a global consulting firm, where I focus on environmental health and safety solutions. My educational background is in geology, having studied at Southern Illinois University and the University of Nevada. More recently I have expanded my credentails to Health and Safety and Environmental Compliance with certification as a ISO 14001 Lead Auditor, and <a href="https://badge.bcsp.org/?e=NDU4NTgyfDU0NTk3Mzl8MTAwMTk4MTMzMg==">Associate Safety Professional.</a> I also have training in software development from Actualize Coding Bootcamp.
-
-        Outside of work, I’m passionate about the outdoors and technology. I enjoy playing video games, tennis, and camping, as well as watching fantasy and horror movies. I’m married to my wonderful wife, Rebeca, a nutrition educator. And I also have a top-notch dog, a Golden Retriever, Dobber, who is eight.
-
-        Thanks for stopping by! Feel free to connect with me.</p>
+        <p>
+            Hi, I’m Justin, an environmental scientist and EHS specialist based in Racine, Wisconsin. I work for Arcadis, a global consulting firm, where I focus on environmental health and safety solutions. My educational background is in geology, having studied at Southern Illinois University and the University of Nevada. More recently I have expanded my credentails to Health and Safety and Environmental Compliance with certification as a ISO 14001 Lead Auditor, and
+            <a href="https://badge.bcsp.org/?e=NDU4NTgyfDU0NTk3Mzl8MTAwMTk4MTMzMg==">Associate Safety Professional.</a> I also have training in software development from Actualize Coding Bootcamp.
+        </p>
+        <p>
+            Outside of work, I’m passionate about the outdoors and technology. I enjoy playing video games, tennis, and camping, as well as watching fantasy and horror movies. I’m married to my wonderful wife, Rebeca, a nutrition educator. And I also have a top-notch dog, a Golden Retriever, Dobber, who is eight.
+        </p>
+        <p>Thanks for stopping by! Feel free to connect with me.</p>
     </div>
 </section>
-
 
 <section id="web">
     <div class="container">
@@ -111,50 +110,40 @@
             <a href="https://www.facebook.com/justin.skord/">Facebook</a>
             <a href="https://www.youtube.com/user/jskord23/">Youtube</a>
             <a href="publications.html">Publications</a>
+            <!-- Duplicate link here for visibility as well -->
+            <a href="/personal.html">🔒 Personal (password required)</a>
         </div>
     </div>
 </section>
 
-<section id="family">
-    <div class="container">
-        <h2>My Family Tree</h2>
-        <a href="Family-Tree-3-4.html"><img src="Full-Green-Tree.png" width="300" height="300"></a>
-    </div>
-</section>
-
-<section id="timeline">
-    <div class="container">
-        <h2>My Timeline</h2>
-        <iframe src="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=1qu2HJjObRSuo_IEzwOMKVKw_7zuJlZ4me30t-rfQOvM&font=Default&lang=en&initial_zoom=2&height=650" width="100%" height="400"></iframe>
-    </div>
-</section>
+<!-- Family Tree and Timeline sections removed from homepage -->
 
 <section id="projects">
     <div class="container">
         <h2>Other Projects</h2>
-         <div class="links">
+        <div class="links">
             <a href="MyPlaces.html">My Places</a>
             <a href="historical-news.html">Today, 100 years ago</a>
         </div>
-        
     </div>
 </section>
 
 <section id="contact">
     <div class="container">
         <h2>Contact Me</h2>
-         <form action="https://formspree.io/jskord@gmail.com" method="POST">
-                        <input type="text" name="name" class="form-control" placeholder="Name">
-                        <br>
-                        <input type="email" name="_replyto" class="form-control" placeholder="email">
-                        <br>
-                        <input type="text" name="Phone Number" class="form-control" placeholder="Phone Number">
-                        <br>
-                        <input type="text" name="message" class="form-control" placeholder="Message">
-                        <br>
-                        <input type="submit" value="Send" class="btn btn-success btn-lg">
-                    </form>
-
+        <!-- Gave the form and inputs IDs so your validation script works -->
+        <form id="contactForm" action="https://formspree.io/jskord@gmail.com" method="POST">
+            <input id="name" type="text" name="name" class="form-control" placeholder="Name" required>
+            <br>
+            <input id="email" type="email" name="_replyto" class="form-control" placeholder="Email" required>
+            <br>
+            <input id="phone" type="text" name="Phone Number" class="form-control" placeholder="Phone Number">
+            <br>
+            <textarea id="message" name="message" class="form-control" placeholder="Message" rows="5" required></textarea>
+            <br>
+            <input type="submit" value="Send" class="btn btn-success btn-lg">
+            <p id="formMessage" class="muted"></p>
+        </form>
     </div>
 </section>
 
@@ -168,20 +157,12 @@
     function updateGreeting() {
         const hour = new Date().getHours();
         let greeting;
-
-        if (hour < 12) {
-            greeting = "Good morning!";
-        } else if (hour < 18) {
-            greeting = "Good afternoon!";
-        } else {
-            greeting = "Good evening!";
-        }
-
-        // Update the greeting in the header
+        if (hour < 12) greeting = "Good morning!";
+        else if (hour < 18) greeting = "Good afternoon!";
+        else greeting = "Good evening!";
         document.getElementById("greeting").innerText = greeting + " I'm Justin Skord!";
     }
 
-    // Call function when the page loads
     window.onload = updateGreeting;
 
     // Show back-to-top button when scrolling down
@@ -199,29 +180,24 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
-    // Form validation
+    // Simple client-side validation feedback (works with new IDs)
     document.getElementById("contactForm").addEventListener("submit", function (event) {
-        event.preventDefault();
         const name = document.getElementById("name").value.trim();
         const email = document.getElementById("email").value.trim();
         const message = document.getElementById("message").value.trim();
         const formMessage = document.getElementById("formMessage");
 
         if (name === "" || email === "" || message === "") {
-            formMessage.textContent = "Please fill out all fields.";
+            event.preventDefault();
+            formMessage.textContent = "Please fill out all required fields.";
+            formMessage.style.color = "crimson";
             return;
         }
-
-        formMessage.textContent = "Message sent successfully!";
-        formMessage.style.color = "green";
-
-        // Optionally reset form after submission
-        this.reset();
+        formMessage.textContent = "Sending…";
+        formMessage.style.color = "#666";
     });
 
-    // Call updateGreeting when the page loads
     document.addEventListener("DOMContentLoaded", updateGreeting);
 </script>
-
-     
-
+</body>
+</html>
