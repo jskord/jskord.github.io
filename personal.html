@@ -110,7 +110,7 @@
     // (async () => {const pwd="YOUR_PASSWORD";
     //   const hex=[...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pwd)))]
     //     .map(b=>b.toString(16).padStart(2,"0")).join(""); console.log(hex);})();
-    const PASSWORD_HASH_HEX = "YOUR_SHA256_HASH_HERE";
+    const PASSWORD_HASH_HEX = "dde597001cd2a6483573efb2c3471db5c87fc4f2ab75a5916f9c454cedddcb80";
     const STORAGE_KEY = "personal_unlocked_v1";
 
     const toHex = (buf) => Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
