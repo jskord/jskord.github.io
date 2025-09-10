@@ -39,7 +39,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # Toggle illustration on/off:
-          GENERATE_IMAGE: "true"
+          GENERATE_IMAGE: "false"
         run: node update.mjs
 
       - name: Commit changes (if any)
