@@ -10,9 +10,24 @@
     h1 { text-align: center; color: #0056b3; margin-bottom: 1rem; }
     .updated { font-size: .875rem; color: #6c757d; text-align: right; border-top: 1px dashed #e9ecef; padding-top: .5rem; margin-top: 1rem; }
     .text { font-size: 1.1rem; font-weight: 600; margin-bottom: .75rem; }
+    .back-btn {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+.back-btn:hover {
+  background-color: #0056b3;
+}
   </style>
 </head>
 <body>
+  <a href="javascript:history.back()" class="back-btn">← Back</a>
   <h1 id="headline"></h1>
   <div class="fact">
     <div style="text-align:center;margin:1.25rem 0;">
