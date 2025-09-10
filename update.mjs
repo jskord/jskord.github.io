@@ -109,7 +109,7 @@ async function writeHtml({ text, imageDataUrl, updatedLabel }) {
   </style>
 </head>
 <body>
-  <h1>Today's Historical News Fact</h1>
+  <h1>100 Years Ago Today, This is What Was Happening ...</h1>
   <div class="fact">
     ${imageBlock}
     <div class="text">${text.replace(/\n/g, '<br/>')}</div>
