@@ -1,0 +1,57 @@
+name: Daily Historical News
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Runs daily at ~7:00 AM Chicago time during CDT (12:00 UTC).
+    # During CST it fires ~6:00 AM; adjust if you want a fixed local hour.
+    - cron: "0 12 * * *"
+
+permissions:
+  contents: write   # needed to push the updated HTML back to the repo
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: daily-historical-news
+      cancel-in-progress: false
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm i
+          fi
+
+      - name: Generate historical news
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # Toggle illustration on/off:
+          GENERATE_IMAGE: "false"
+        run: node update.mjs
+
+      - name: Commit changes (if any)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add historical-news.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: update historical news ($(date -u +'%Y-%m-%d'))"
+          git push
