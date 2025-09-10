@@ -8,7 +8,7 @@
     "start": "node update.js"
   },
   "dependencies": {
-    "dotenv": "^17.2.1",
+    "dotenv": "^17.2.2",
     "openai": "^4.104.0"
   },
   "author": "jskord",
