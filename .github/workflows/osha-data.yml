@@ -22,23 +22,25 @@ jobs:
         with:
           node-version: '20'
 
-      # --- optional: quick check to see what OSHA returns to GitHub Actions ---
+      # --- optional: quick check to see what the endpoint returns to Actions ---
       - name: Probe SIR endpoint (debug only)
         run: |
           echo "Testing OSHA CSV endpoint headers:"
           curl -I -A "$FETCH_UA" "$SIR_URL" || true
         env:
-          SIR_URL: https://raw.githubusercontent.com/public-apis-data/osha-sir-cache/main/severe_injury_reports.csv
+          SIR_URL: https://r.jina.ai/http://www.osha.gov/sites/default/files/severe_injury_reports.csv
           FETCH_UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 (GitHubActionsBot)
 
       - name: Build OSHA JSON
         env:
           STATE: WI
           DAYS: '90'
-          SIR_URL: https://raw.githubusercontent.com/public-apis-data/osha-sir-cache/main/severe_injury_reports.csv
+          SIR_URL: https://r.jina.ai/http://www.osha.gov/sites/default/files/severe_injury_reports.csv
+          # network / header tuning
           FETCH_UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 (GitHubActionsBot)
           FETCH_RETRIES: '4'
           FETCH_BACKOFF_MS: '750'
+          # optional AI summary
           # OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # LLM_MODEL: gpt-4o-mini
           # LLM_API_URL: https://api.openai.com/v1/chat/completions
@@ -48,16 +50,11 @@ jobs:
         run: |
           set -e
           echo "PWD: $(pwd)"
-          echo "Top-level:"
-          ls -la
-          echo "data/:"
-          ls -la data || echo "(no data directory)"
-          echo "Search for files:"
-          find . -maxdepth 4 -type f -name 'osha-*.json' -print || true
-
+          echo "Top-level:" && ls -la
+          echo "data/:" && ls -la data || echo "(no data directory)"
+          echo "Search for files:" && find . -maxdepth 4 -type f -name 'osha-*.json' -print || true
           if [ ! -f data/osha-summary.json ] || [ ! -f data/osha-incidents.json ]; then
             echo "::error::Expected files not found at data/osha-summary.json and/or data/osha-incidents.json"
-            echo "If they exist elsewhere, the find output above will show their path."
             exit 1
           fi
 
@@ -72,4 +69,3 @@ jobs:
             git commit -m "chore(data): update OSHA SIR JSON"
             git push
           fi
-
