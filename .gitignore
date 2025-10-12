@@ -1,3 +1,26 @@
-node_modules
+# Dependency directories
+node_modules/
+
+# Environment and local config files
 .env
+.DS_Store
+
+# Build outputs or logs
+*.log
+
+# Local editor/project files
+.vscode/
+.idea/
+
+# Ignore temporary files
+*.swp
+*.tmp
+*.bak
+
+# Ignore the historical news HTML build artifact (you listed this before)
 historical-news.html
+
+# --- ALLOW OSHA DATA OUTPUTS ---
+# Keep the data folder and OSHA JSONs tracked even if other JSONs are ignored
+!/data/
+!/data/osha-*.json
