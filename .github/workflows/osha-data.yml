@@ -51,19 +51,36 @@ jobs:
 
       - name: Show build outputs
         run: |
-          echo "Repo root:" && ls -la
-          echo "data/:" && ls -la data || true
-          echo "Preview osha-summary.json:" && sed -n '1,40p' data/osha-summary.json || true
+          echo "PWD: $(pwd)"
+          echo "Repo root:"
+          ls -la
+          echo "data/:"
+          ls -la data || echo "data/ does not exist"
+          echo "Preview osha-summary.json:"
+          [ -f data/osha-summary.json ] && sed -n '1,60p' data/osha-summary.json || echo "no osha-summary.json"
 
-      - name: Commit data files
+      - name: Commit data files (only if present)
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@users.noreply.github.com"
-          # Force add in case .gitignore excludes /data or *.json
-          git add -f data/osha-*.json
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "chore(data): update OSHA SIR JSON"
-            git push
+          set -e
+
+          # Nothing to do if data dir missing
+          if [ ! -d data ]; then
+            echo "No data/ directory produced — skipping commit."
+            exit 0
           fi
+
+          # Guard: only try to add if files exist
+          if ls data/osha-*.json 1> /dev/null 2>&1; then
+            git config user.name "github-actions"
+            git config user.email "actions@users.noreply.github.com"
+            git add -f data/osha-*.json
+            if git diff --cached --quiet; then
+              echo "No changes to commit."
+            else
+              git commit -m "chore(data): update OSHA SIR JSON"
+              git push
+            fi
+          else
+            echo "No matching JSON files (data/osha-*.json) — skipping commit."
+          fi
+
