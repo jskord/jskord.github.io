@@ -216,4 +216,4 @@ async function maybeLLMSummary(incidents, stats) {
         { role: "user", content: user },
       ],
       temperature: 0.3,
-      max_tokens: 350_
+      max_tokens: 350,
