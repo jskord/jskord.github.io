@@ -36,51 +36,40 @@ jobs:
           STATE: WI
           DAYS: '90'
           SIR_URL: https://www.osha.gov/sites/default/files/severe_injury_reports.csv
-
-          # --- network / header tuning ---
           FETCH_UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 (GitHubActionsBot)
-          # FETCH_REFERER: https://www.osha.gov/
           FETCH_RETRIES: '4'
           FETCH_BACKOFF_MS: '750'
-
-          # --- optional AI summary ---
           # OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # LLM_MODEL: gpt-4o-mini
           # LLM_API_URL: https://api.openai.com/v1/chat/completions
         run: node scripts/build-osha-data.mjs
 
-      - name: Show build outputs
+      - name: Verify outputs exist
         run: |
+          set -e
           echo "PWD: $(pwd)"
-          echo "Repo root:"
+          echo "Top-level:"
           ls -la
           echo "data/:"
-          ls -la data || echo "data/ does not exist"
-          echo "Preview osha-summary.json:"
-          [ -f data/osha-summary.json ] && sed -n '1,60p' data/osha-summary.json || echo "no osha-summary.json"
+          ls -la data || echo "(no data directory)"
+          echo "Search for files:"
+          find . -maxdepth 4 -type f -name 'osha-*.json' -print || true
+
+          if [ ! -f data/osha-summary.json ] || [ ! -f data/osha-incidents.json ]; then
+            echo "::error::Expected files not found at data/osha-summary.json and/or data/osha-incidents.json"
+            echo "If they exist elsewhere, the find output above will show their path."
+            exit 1
+          fi
 
       - name: Commit data files (only if present)
         run: |
-          set -e
-
-          # Nothing to do if data dir missing
-          if [ ! -d data ]; then
-            echo "No data/ directory produced — skipping commit."
-            exit 0
-          fi
-
-          # Guard: only try to add if files exist
-          if ls data/osha-*.json 1> /dev/null 2>&1; then
-            git config user.name "github-actions"
-            git config user.email "actions@users.noreply.github.com"
-            git add -f data/osha-*.json
-            if git diff --cached --quiet; then
-              echo "No changes to commit."
-            else
-              git commit -m "chore(data): update OSHA SIR JSON"
-              git push
-            fi
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f data/osha-*.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
           else
-            echo "No matching JSON files (data/osha-*.json) — skipping commit."
+            git commit -m "chore(data): update OSHA SIR JSON"
+            git push
           fi
 
