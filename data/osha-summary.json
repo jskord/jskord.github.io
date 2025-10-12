@@ -1,0 +1,16 @@
+{
+  "updated": "2025-10-12T22:54:06.447Z",
+  "state": "WI",
+  "days": 90,
+  "stats": {
+    "total": 0,
+    "counts": {
+      "hospitalization": 0,
+      "amputation": 0,
+      "lossOfEye": 0
+    },
+    "byNAICS": [],
+    "byCity": []
+  },
+  "ai_summary": null
+}
