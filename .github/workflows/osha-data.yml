@@ -13,9 +13,9 @@ runs-on: ubuntu-latest
 permissions:
 contents: write # to commit JSON back to repo
 steps:
-- uses: actions/checkout@v4
-with:
-persist-credentials: true
+  - uses: actions/checkout@v4
+  with:
+    persist-credentials: true
 
 
 - name: Use Node 20
