@@ -47,14 +47,20 @@ jobs:
           # OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # LLM_MODEL: gpt-4o-mini
           # LLM_API_URL: https://api.openai.com/v1/chat/completions
-
         run: node scripts/build-osha-data.mjs
+
+      - name: Show build outputs
+        run: |
+          echo "Repo root:" && ls -la
+          echo "data/:" && ls -la data || true
+          echo "Preview osha-summary.json:" && sed -n '1,40p' data/osha-summary.json || true
 
       - name: Commit data files
         run: |
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
-          git add data/osha-*.json || true
+          # Force add in case .gitignore excludes /data or *.json
+          git add -f data/osha-*.json
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
