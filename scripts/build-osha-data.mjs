@@ -26,6 +26,7 @@ async function fetchCSV(url) {
   let lastErr;
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
+      console.log(`[fetchCSV] GET ${url} (attempt ${attempt}/${MAX_RETRIES})`);
       const res = await fetch(url, {
         headers: {
           "User-Agent": DEFAULT_UA,
@@ -33,35 +34,30 @@ async function fetchCSV(url) {
             "text/csv,application/octet-stream;q=0.9,text/plain;q=0.8,*/*;q=0.7",
           "Accept-Language": "en-US,en;q=0.9",
           ...(DEFAULT_REFERER ? { Referer: DEFAULT_REFERER } : {}),
-          // If the source needs a key/token, expose it from workflow env:
-          // "X-API-Key": process.env.OSHA_API_KEY,
         },
         redirect: "follow",
       });
 
-      // Some hosts return 200 with HTML (blocked). Guard for that.
       const ctype = res.headers.get("content-type") || "";
       if (!res.ok) {
         const body = await safePeek(res);
-        throw new Error(
-          `HTTP ${res.status} ${res.statusText} (${ctype}) — ${body}`
-        );
+        console.error(`[fetchCSV] HTTP ${res.status} ${res.statusText} (${ctype})`);
+        throw new Error(`HTTP ${res.status} ${res.statusText} (${ctype}) — ${body}`);
       }
 
       const text = await res.text();
-      // If we accidentally got an HTML page (bot block), treat as error.
       if (ctype.includes("text/html") || looksLikeHTML(text)) {
-        throw new Error(
-          `Unexpected HTML response (likely blocked). content-type=${ctype}`
-        );
+        console.error("[fetchCSV] Received HTML (likely blocked by host/CDN)");
+        throw new Error(`Unexpected HTML response (likely blocked). content-type=${ctype}`);
       }
+      console.log(`[fetchCSV] OK (${text.length.toLocaleString()} bytes)`);
       return text;
     } catch (err) {
       lastErr = err;
       if (attempt < MAX_RETRIES) {
         const wait = BACKOFF_MS * Math.pow(2, attempt - 1);
+        console.warn(`[fetchCSV] attempt ${attempt} failed: ${err.message}. Retrying in ${wait}ms...`);
         await new Promise((r) => setTimeout(r, wait));
-        continue;
       }
     }
   }
@@ -145,8 +141,7 @@ function filterAndNormalize(rows) {
   const kept = rows
     .filter((r) => {
       const okDate = r.Date && withinDays(r.Date, DAYS);
-      const okState =
-        STATE === "ALL" ? true : (r.State || "").toUpperCase() === STATE;
+      const okState = STATE === "ALL" ? true : (r.State || "").toUpperCase() === STATE;
       return okDate && okState;
     })
     .map((r) => ({
@@ -157,15 +152,9 @@ function filterAndNormalize(rows) {
       state: r.State || "",
       naics: r["NAICS Code"] || r.NAICS || "",
       description: r["Injury Description"] || r.Description || "",
-      hospitalization: String(r["Hospitalized?"] || "")
-        .toLowerCase()
-        .startsWith("y"),
-      amputation: String(r["Amputation?"] || "")
-        .toLowerCase()
-        .startsWith("y"),
-      lossOfEye: String(r["Loss of an Eye?"] || "")
-        .toLowerCase()
-        .startsWith("y"),
+      hospitalization: String(r["Hospitalized?"] || "").toLowerCase().startsWith("y"),
+      amputation: String(r["Amputation?"] || "").toLowerCase().startsWith("y"),
+      lossOfEye: String(r["Loss of an Eye?"] || "").toLowerCase().startsWith("y"),
     }));
 
   const total = kept.length;
@@ -215,8 +204,8 @@ async function maybeLLMSummary(incidents, stats) {
         { role: "user", content: user },
       ],
       temperature: 0.3,
-      max_tokens: 350
-    })
+      max_tokens: 350,
+    }),
   });
 
   if (!res.ok) {
@@ -226,3 +215,63 @@ async function maybeLLMSummary(incidents, stats) {
   const data = await res.json();
   return data.choices?.[0]?.message?.content?.trim() || null;
 }
+
+// ---------- main ----------
+async function main() {
+  console.log("Starting OSHA data build...");
+  console.log("Working directory:", process.cwd());
+  console.log("SIR_URL:", SIR_URL);
+  console.log("STATE:", STATE, "DAYS:", DAYS);
+
+  mkdirSync(OUT_DIR, { recursive: true });
+
+  // 1) Fetch CSV
+  const csv = await fetchCSV(SIR_URL);
+
+  // 2) Parse + filter
+  const rows = parseCSV(csv);
+  console.log(`Parsed ${rows.length.toLocaleString()} CSV rows`);
+  const { incidents, summaryStats } = filterAndNormalize(rows);
+  console.log(`Kept ${summaryStats.total.toLocaleString()} incidents for STATE=${STATE}, DAYS=${DAYS}`);
+
+  // 3) Write outputs
+  const incidentsPath = resolve(OUT_DIR, "osha-incidents.json");
+  const summaryPath = resolve(OUT_DIR, "osha-summary.json");
+  console.log("Writing outputs to:", OUT_DIR);
+  console.log("Files:", incidentsPath, summaryPath);
+
+  writeFileSync(
+    incidentsPath,
+    JSON.stringify(
+      { updated: new Date().toISOString(), state: STATE, days: DAYS, incidents },
+      null,
+      2
+    )
+  );
+
+  const ai = await maybeLLMSummary(incidents, summaryStats);
+
+  writeFileSync(
+    summaryPath,
+    JSON.stringify(
+      {
+        updated: new Date().toISOString(),
+        state: STATE,
+        days: DAYS,
+        stats: summaryStats,
+        ai_summary: ai,
+      },
+      null,
+      2
+    )
+  );
+
+  console.log(
+    `Wrote ${incidents.length} incidents to /data and summary ${ai ? "with" : "without"} AI.`
+  );
+}
+
+main().catch((err) => {
+  console.error("❌ BUILD FAILED:", err);
+  process.exit(1);
+});
