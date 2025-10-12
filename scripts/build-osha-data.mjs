@@ -189,8 +189,7 @@ async function maybeLLMSummary(incidents, stats) {
   const key = process.env.OPENAI_API_KEY || process.env.LLM_API_KEY;
   if (!key) return null;
 
-  const url =
-    process.env.LLM_API_URL || "https://api.openai.com/v1/chat/completions";
+  const url = process.env.LLM_API_URL || "https://api.openai.com/v1/chat/completions";
   const model = process.env.LLM_MODEL || "gpt-4o-mini";
 
   const bullets = incidents
@@ -216,4 +215,14 @@ async function maybeLLMSummary(incidents, stats) {
         { role: "user", content: user },
       ],
       temperature: 0.3,
-      max_tokens: 350,
+      max_tokens: 350
+    })
+  });
+
+  if (!res.ok) {
+    console.error("LLM error", await res.text().catch(() => ""));
+    return null;
+  }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content?.trim() || null;
+}
