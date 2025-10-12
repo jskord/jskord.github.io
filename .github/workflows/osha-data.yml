@@ -28,7 +28,7 @@ jobs:
           echo "Testing OSHA CSV endpoint headers:"
           curl -I -A "$FETCH_UA" "$SIR_URL" || true
         env:
-          SIR_URL: https://www.osha.gov/sites/default/files/severe_injury_reports.csv
+          SIR_URL: https://raw.githubusercontent.com/public-apis-data/osha-sir-cache/main/severe_injury_reports.csv
           FETCH_UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 (GitHubActionsBot)
 
       - name: Build OSHA JSON
