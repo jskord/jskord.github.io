@@ -22,14 +22,32 @@ jobs:
         with:
           node-version: '20'
 
+      # --- optional: quick check to see what OSHA returns to GitHub Actions ---
+      - name: Probe SIR endpoint (debug only)
+        run: |
+          echo "Testing OSHA CSV endpoint headers:"
+          curl -I -A "$FETCH_UA" "$SIR_URL" || true
+        env:
+          SIR_URL: https://www.osha.gov/sites/default/files/severe_injury_reports.csv
+          FETCH_UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 (GitHubActionsBot)
+
       - name: Build OSHA JSON
         env:
           STATE: WI
           DAYS: '90'
-          # Optional LLM settings:
+          SIR_URL: https://www.osha.gov/sites/default/files/severe_injury_reports.csv
+
+          # --- network / header tuning ---
+          FETCH_UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 (GitHubActionsBot)
+          # FETCH_REFERER: https://www.osha.gov/
+          FETCH_RETRIES: '4'
+          FETCH_BACKOFF_MS: '750'
+
+          # --- optional AI summary ---
           # OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # LLM_MODEL: gpt-4o-mini
           # LLM_API_URL: https://api.openai.com/v1/chat/completions
+
         run: node scripts/build-osha-data.mjs
 
       - name: Commit data files
@@ -37,5 +55,9 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
           git add data/osha-*.json || true
-          git diff --cached --quiet && echo "No changes" || git commit -m "chore(data): update OSHA SIR JSON"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore(data): update OSHA SIR JSON"
+            git push
+          fi
