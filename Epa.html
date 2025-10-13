@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EPA ECHO – Recent Activity</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
+    #list { display: grid; gap: 12px; }
+    .card { border:1px solid #e5e7eb; border-radius:12px; padding:12px; }
+    .muted { color:#555; font-size:0.92rem; }
+  </style>
+</head>
+<body>
+  <h1>EPA ECHO – Recent Activity</h1>
+  <div id="error" style="color:#b00020;margin:8px 0"></div>
+
+  <section style="padding:8px 0;">
+    <div>
+      <label>State: <input id="state" value="WI" size="4" /></label>
+      <label style="margin-left:12px">Lookback days: <input id="days" value="365" size="6" /></label>
+      <button id="refresh">Refresh</button>
+    </div>
+    <div id="summary" class="muted" style="margin-top:8px;"></div>
+    <div id="stats" style="margin:12px 0;"></div>
+    <div id="list"></div>
+  </section>
+
+  <script type="module">
+    function bust(url){ return url + (url.includes('?') ? '&' : '?') + 'v=' + Date.now(); }
+
+    async function loadJSON(path){
+      const res = await fetch(bust(path), { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status} for ${path}`);
+      return res.json();
+    }
+
+    function money(n){ try { return Number(n).toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); } catch { return n; } }
+
+    function renderStats(stats){
+      if(!stats) return '<div>No stats available.</div>';
+      const byProgram = (stats.byProgram||[]).map(([k,v])=>`<li>${k}: ${v}</li>`).join('');
+      const byCity  = (stats.byCity||[]).map(([k,v])=>`<li>${k}: ${v}</li>`).join('');
+      const cov = stats.datasetRange?.min && stats.datasetRange?.max
+        ? `Dataset coverage: ${new Date(stats.datasetRange.min).toLocaleDateString()} – ${new Date(stats.datasetRange.max).toLocaleDateString()}`
+        : '';
+      return `
+        <div><strong>Total recent records:</strong> ${stats.total}</div>
+        <div>Inspections: ${stats.counts.inspections} · Enforcements: ${stats.counts.enforcements} · Total penalties (recent): ${money(stats.penaltiesSum)}</div>
+        <details style="margin-top:6px"><summary>Top Programs</summary><ul>${byProgram}</ul></details>
+        <details style="margin-top:6px"><summary>Top Cities</summary><ul>${byCity}</ul></details>
+        <div class="muted" style="margin-top:6px">${cov}</div>
+      `;
+    }
+
+    function cardHTML(it){
+      const when = it.eventDate ? new Date(it.eventDate).toLocaleDateString() : '';
+      const flags = it.flags ? ` · ${it.flags}` : '';
+      const penalty = it.penalties ? ` · ${money(it.penalties)}` : '';
+      return `
+        <article class="card">
+          <div style="font-weight:600">${it.facility || "(Facility)"} — ${it.program || "Program?"}</div>
+          <div class="muted">${it.city||""}, ${it.state||""}${penalty}${flags}</div>
+          <div class="muted">Last Insp: ${it.lastInspectionDate || "—"} · Last Enf: ${it.lastEnforcementDate || "—"} · Event: ${when}</div>
+        </article>
+      `;
+    }
+
+    async function hydrate(){
+      try {
+        const sum = await loadJSON('/data/epa-summary.json');
+        const inc = await loadJSON('/data/epa-incidents.json');
+
+        document.getElementById('summary').textContent =
+          `Filters: ${sum.state} · last ${sum.days} days · Updated: ${new Date(sum.updated).toLocaleString()}`;
+        document.getElementById('stats').innerHTML = renderStats(sum.stats);
+        document.getElementById('list').innerHTML = (inc.incidents||[]).slice(0, 30).map(cardHTML).join('');
+
+        document.getElementById('state').value = sum.state || 'WI';
+        document.getElementById('days').value = sum.days || 365;
+      } catch (err) {
+        document.getElementById('error').textContent = 'Failed to load EPA data: ' + err.message;
+        console.error('EPA load error', err);
+      }
+    }
+
+    function refresh(){
+      const st = document.getElementById('state').value.trim().toUpperCase() || 'WI';
+      const dy = document.getElementById('days').value.trim() || '365';
+      alert(`Filters are built at Action time. Current data is for ${st}, last ${dy} days.\n\nTo change permanently, edit STATE/DAYS in the workflow and re-run.`);
+    }
+
+    hydrate();
+    document.getElementById('refresh').addEventListener('click', refresh);
+  </script>
+</body>
+</html>

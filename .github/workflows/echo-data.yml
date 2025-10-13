@@ -1,4 +1,4 @@
-name: Build OSHA data
+name: Build EPA ECHO data
 
 on:
   schedule:
@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # allow committing JSON back to repo
+      contents: write
 
     steps:
       - name: Checkout
@@ -22,39 +22,39 @@ jobs:
         with:
           node-version: '20'
 
-      # --- optional: quick check to see what the endpoint returns to Actions ---
-      - name: Probe SIR endpoint (debug only)
+      # Optional: quick probe of the CSV endpoint
+      - name: Probe ECHO endpoint (debug only)
         run: |
-          echo "Testing OSHA CSV endpoint headers:"
-          curl -I -A "$FETCH_UA" "$SIR_URL" || true
+          echo "Testing ECHO CSV endpoint headers:"
+          curl -I -A "$FETCH_UA" "$ECHO_URL" || true
         env:
-          SIR_URL: https://r.jina.ai/http://www.osha.gov/sites/default/files/severe_injury_reports.csv
+          # 🔁 Set this to a real, downloadable ECHO CSV URL (see notes below)
+          ECHO_URL: https://r.jina.ai/http://example.com/your-echo-export.csv
           FETCH_UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 (GitHubActionsBot)
 
-      - name: Build OSHA JSON
+      - name: Build ECHO JSON
         env:
-          STATE: WI
-          DAYS: '90'
-          SIR_URL: https://r.jina.ai/http://www.osha.gov/sites/default/files/severe_injury_reports.csv
+          # 🔁 Set this to a real, downloadable ECHO CSV URL
+          ECHO_URL: https://echo.epa.gov/files/data/Data_Download_ECHO_10_12_2025_68ec51310a9e4.csv
+
+          # Filters
+          STATE: ALL          # use 'ALL' for all states
+          DAYS: '365'        # lookback days for “recent” events
+
           # network / header tuning
           FETCH_UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 (GitHubActionsBot)
           FETCH_RETRIES: '4'
           FETCH_BACKOFF_MS: '750'
-          # optional AI summary
-          # OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          # LLM_MODEL: gpt-4o-mini
-          # LLM_API_URL: https://api.openai.com/v1/chat/completions
-        run: node scripts/build-osha-data.mjs
+        run: node scripts/build-echo-data.mjs
 
       - name: Verify outputs exist
         run: |
           set -e
-          echo "PWD: $(pwd)"
           echo "Top-level:" && ls -la
           echo "data/:" && ls -la data || echo "(no data directory)"
-          echo "Search for files:" && find . -maxdepth 4 -type f -name 'osha-*.json' -print || true
-          if [ ! -f data/osha-summary.json ] || [ ! -f data/osha-incidents.json ]; then
-            echo "::error::Expected files not found at data/osha-summary.json and/or data/osha-incidents.json"
+          echo "Search for files:" && find . -maxdepth 4 -type f -name 'epa-*.json' -print || true
+          if [ ! -f data/epa-incidents.json ] || [ ! -f data/epa-summary.json ]; then
+            echo "::error::Expected files not found at data/epa-incidents.json and/or data/epa-summary.json"
             exit 1
           fi
 
@@ -62,10 +62,10 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
-          git add -f data/osha-*.json
+          git add -f data/epa-*.json
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "chore(data): update OSHA SIR JSON"
+            git commit -m "chore(data): update EPA ECHO JSON"
             git push
           fi
