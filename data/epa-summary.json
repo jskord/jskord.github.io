@@ -1,0 +1,19 @@
+{
+  "updated": "2025-10-13T01:41:33.173Z",
+  "state": "ALL",
+  "days": 365,
+  "stats": {
+    "total": 0,
+    "counts": {
+      "inspections": 0,
+      "enforcements": 0
+    },
+    "penaltiesSum": 0,
+    "byProgram": [],
+    "byCity": [],
+    "datasetRange": {
+      "min": null,
+      "max": null
+    }
+  }
+}
